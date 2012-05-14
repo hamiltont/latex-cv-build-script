@@ -1,0 +1,58 @@
+\documentclass[a4paper,11pt]{article}
+
+% Builds header frame and section titles in school colors
+\usepackage{misc/cv}
+
+% Allows me to break bibliography into multiple files that
+% are then individually sortable/styled/counted. See biblatex
+% if I want to be even more hardcore about this
+\usepackage{bibtopic}
+
+\name{Your Name}
+\photo{misc/profile.eps}
+\info{Department of Electrical  \\
+		& and Computer Engineering\\
+	    & Foobarb Univ, Foobarb, USA\\
+      Email: & bob@bobers.com\\
+      Advisor: & Foo Bar
+      }
+      
+\begin{document}
+\maketitle
+ 
+\begin{btSect}{bibs/conferences}
+\section{Conference Publications}
+\btPrintAll
+\end{btSect}
+
+\begin{btSect}{bibs/journals}
+\section{Journal Publications}
+\btPrintAll
+\end{btSect}
+
+\begin{btSect}{bibs/book-chapters}
+\section{Book Chapter Publications}
+\btPrintAll
+\end{btSect}
+
+\begin{btSect}{bibs/workshops}
+\section{Workshop Papers}
+\btPrintAll
+\end{btSect}
+
+
+\begin{btSect}{bibs/to-appear}
+\section{In Submission Publications}
+\btPrintAll
+\end{btSect}
+
+\section{Interests}
+stuff
+
+\section{Research overview}
+stuff
+
+\section{Biography}
+stuff
+
+\end{document}

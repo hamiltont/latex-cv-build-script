@@ -1,0 +1,5 @@
+This project builds a CV designed using Latex. 
+
+See sample-cv for a beginner tex document. All bib files are stored under a bibs directory, and are loaded into bibliographies separately. 
+
+A profile picture should be stored under misc/profile.eps
