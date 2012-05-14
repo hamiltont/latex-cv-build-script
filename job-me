@@ -1,0 +1,98 @@
+#!/bin/sh
+
+# Originally created by Hamilton Turner
+# hamiltont<at>gmail.com on May 8 2012. 
+# Feel free to use/modify, but please 
+# leave this attribution unchanged
+
+# TODO monitor the error output of all commands and 
+# print the output if we hang or an error is thrown. 
+# See if there are parameters for the subcommands that
+# assist in scripting, instead of always falling back
+# on user input in case of error
+
+file="resume"
+outfile="hamilton-turner.pdf"
+debug=false
+issilent=true
+
+# Allows us to hide all output
+function silent() {
+	if $issilent ;
+	then
+		"$@" > /dev/null 2>&1;
+	else
+		"$@";
+	fi
+}
+
+# Remove temporary files if we're not debugging
+function clean {
+	if  $debug ;
+	then
+		return 0
+	fi	
+
+	# Remove all the standard files
+	silent rm *.aux *.bbl *.ps *.blg *.dvi *.log *.out
+
+	# Remove the files that bibtoic generates
+	silent rm $file*.bbl
+}
+
+while getopts "dvc" OPT
+do
+	case $OPT in
+	d)	debug=true;;
+	v)	issilent=false;;
+	c)	clean
+		exit 0;;
+	[?])	echo "
+Usage: $0 [-d] [-v] [-c] <tex file>
+
+This script builds my resume, by default hiding subcommand
+output and cleaning up after itself. 
+
+OPTIONS:
+ -d 	Debugging. Temporary files are not removed
+ -v     Verbose e.g. subcommand output is printed
+ -c     Clean temporary files and exit. 
+
+"
+		exit 1;;
+	esac
+done
+
+# Pick up the filename. This only really handles proper usage, 
+# I don't totally understand the argument handling here
+if [ -z ${@:$OPTIND} ]
+then
+	echo "No filename passed, assuming 'resume'"
+else
+	file = ${@:$OPTIND}
+fi
+
+
+
+clean
+
+echo "latex: Created AUX files"
+silent latex "$file"
+
+echo "bibtex: Bibliography databases..."
+for bib in `ls $file*.bbl`; do
+	echo "bibtex: Processing ${bib%.bbl}"
+	silent bibtex "${bib%.bbl}"
+done
+
+echo "latex: Inserting bibliographic references for citations"
+silent latex "$file"
+echo "latex: Reformatting with citations included"
+silent latex "$file"
+echo "dvips: Creating postscript"
+silent dvips "$file" 
+echo "ps2pdf: Creating PDF"
+silent ps2pdf "$file.ps" "$outfile"
+
+
+clean
